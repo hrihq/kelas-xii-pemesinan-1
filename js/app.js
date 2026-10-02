@@ -45,7 +45,15 @@ const DOWNLOAD_ICON = `<svg class="doc-icon" viewBox="0 0 24 24" fill="none" str
 // Path dokumen absolut (site di-host di sub-path GitHub Pages)
 function docUrl(path) {
  if (!path) return "";
- return new URL(path, window.location.origin + window.location.pathname.replace(/[^/]*$/, "")).href;
+ // data menyimpan "/docs/x.pdf" (absolut dari root repo),
+ // tapi site berada di sub-path, jadi buat relatif dulu.
+ let rel = path.replace(/^\/+/, "");
+ let base = window.location.pathname.replace(/[^/]*$/, "");
+ try {
+  return new URL(rel, window.location.origin + base).href;
+ } catch (e) {
+  return path;
+ }
 }
 
 // Cek apakah lampiran adalah gambar (untuk preview)
