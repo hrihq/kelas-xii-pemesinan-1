@@ -300,6 +300,17 @@
 			// ============================================================
 			// GitHub API
 			// ============================================================
+			async function ghSha(path) {
+				try {
+					const r = await fetch(`${GH_API}/repos/${REPO}/contents/${path}?ref=master`, {
+						headers: { authorization: `token ${GH_TOKEN}`, accept: "application/vnd.github+json" },
+					});
+					if (!r.ok) return null;
+					const j = await r.json();
+					return j.sha || null;
+				} catch (e) { return null; }
+			}
+
 			async function ghPut(path, bytes, message) {
 				const chunkSize = 0x8000;
 				let binary = "";
@@ -307,6 +318,10 @@
 					binary += String.fromCharCode.apply(null, bytes.subarray(i, i + chunkSize));
 				}
 				const b64 = btoa(binary);
+				// file yang sudah ada butuh sha, kalau baru biarkan tanpa sha
+				const sha = await ghSha(path);
+				const payload = { message, content: b64, branch: "master" };
+				if (sha) payload.sha = sha;
 				const r = await fetch(`${GH_API}/repos/${REPO}/contents/${path}`, {
 					method: "PUT",
 					headers: {
@@ -314,7 +329,7 @@
 						accept: "application/vnd.github+json",
 						"content-type": "application/json",
 					},
-					body: JSON.stringify({ message, content: b64, branch: "master" }),
+					body: JSON.stringify(payload),
 				});
 				const j = await r.json();
 				if (!r.ok) throw new Error(j.message || "HTTP " + r.status);
