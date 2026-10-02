@@ -396,15 +396,46 @@ function revealAll() {
 // ============================================================
 function setupScrollProgress() {
  const bar = document.getElementById("navProgress");
+ const nav = document.querySelector(".navbar");
  if (!bar) return;
  const onScroll = () => {
  const h = document.documentElement;
  const scrolled = h.scrollTop;
  const total = h.scrollHeight - h.clientHeight;
- bar.style.width = total > 0 ? `${(scrolled / total) * 100}%` : "0%";
+ const pct = total > 0 ? scrolled / total : 0;
+ bar.style.transform = `scaleX(${pct})`;
+ bar.style.width = "100%";
+ if (nav) {
+ if (scrolled > 8) nav.classList.add("scrolled");
+ else nav.classList.remove("scrolled");
+ }
  };
  window.addEventListener("scroll", onScroll, { passive: true });
  onScroll();
+}
+
+// ============================================================
+// MODE GELAP (toggle, tersimpan di localStorage)
+// ============================================================
+function setupThemeToggle() {
+ const btn = document.getElementById("themeToggle");
+ if (!btn) return;
+ const apply = (theme) => {
+ document.documentElement.setAttribute("data-theme", theme);
+ try { localStorage.setItem("pm1-theme", theme); } catch (e) {}
+ };
+ // load preferensi tersimpan, fallback ke preferensi sistem
+ let saved = null;
+ try { saved = localStorage.getItem("pm1-theme"); } catch (e) {}
+ if (saved) {
+ apply(saved);
+ } else if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+ apply("dark");
+ }
+ btn.addEventListener("click", () => {
+ const cur = document.documentElement.getAttribute("data-theme");
+ apply(cur === "dark" ? "light" : "dark");
+ });
 }
 
 // ============================================================
@@ -427,6 +458,7 @@ function setupNav() {
 document.addEventListener("DOMContentLoaded", () => {
  setupNav();
  setupScrollProgress();
+ setupThemeToggle();
 
  // Tutup modal saat klik backdrop atau tekan Escape
  const overlay = document.getElementById("modalOverlay");

@@ -66,35 +66,76 @@ a:hover {
  color: #fff;
 }
 
-/* ============ NAVBAR ============ */
+/* ============ NAVBAR (floating bar) ============ */
 .navbar {
- position: sticky;
+ position: fixed;
  top: 0;
- z-index: 100;
- background: rgba(246, 239, 227, 0.82);
- backdrop-filter: blur(14px) saturate(150%);
- -webkit-backdrop-filter: blur(14px) saturate(150%);
- border-bottom: 1px solid var(--line);
+ left: 0;
+ right: 0;
+ z-index: 200;
+ background: rgba(255, 253, 248, 0.72);
+ backdrop-filter: blur(18px) saturate(160%);
+ -webkit-backdrop-filter: blur(18px) saturate(160%);
+ border: none;
+ transition: all 0.35s var(--ease);
+}
+
+.nav-shell {
+ max-width: 1080px;
+ margin: 12px auto;
+ padding: 0 22px;
+}
+
+.nav-container {
+ position: relative;
+ padding: 0 20px;
+ height: calc(var(--nav-h) - 8px);
+ display: flex;
+ align-items: center;
+ justify-content: space-between;
+ background: rgba(255, 253, 248, 0.88);
+ border: 1px solid var(--line);
+ border-radius: 999px;
+ box-shadow: 0 8px 30px -12px rgba(60, 45, 25, 0.28);
+ backdrop-filter: blur(10px);
+ -webkit-backdrop-filter: blur(10px);
+ transition: all 0.35s var(--ease);
+}
+
+.navbar.scrolled .nav-container {
+ box-shadow: 0 12px 36px -14px rgba(60, 45, 25, 0.38);
+ transform: translateY(2px);
 }
 
 .nav-progress {
  position: absolute;
- left: 0;
- bottom: -1px;
+ left: 18%;
+ right: 18%;
+ bottom: 10px;
  height: 2px;
- width: 0%;
+ width: auto;
+ border-radius: 2px;
  background: linear-gradient(90deg, var(--caramel), var(--clay));
- transition: width 0.1s linear;
+ opacity: 0;
+ transform: scaleX(0);
+ transform-origin: left;
+ transition: opacity 0.3s ease;
 }
 
-.nav-container {
- max-width: 1120px;
- margin: 0 auto;
- padding: 0 22px;
- height: var(--nav-h);
- display: flex;
- align-items: center;
- justify-content: space-between;
+.navbar.scrolled .nav-progress {
+ opacity: 1;
+}
+
+/* jarak atas agar tidak tertutup floating nav */
+main.container,
+.page-header,
+footer.footer {
+ position: relative;
+ z-index: 1;
+}
+
+main.container {
+ padding-top: calc(var(--nav-h) + 26px);
 }
 
 .nav-brand {
@@ -1024,5 +1065,163 @@ a:hover {
  .modal-header,
  .modal-body {
  padding-inline: 18px;
+ }
+}
+
+
+/* ============================================================
+   MODE GELAP (warm dark, tanpa neon)
+   ============================================================ */
+html[data-theme="dark"] {
+ --cream: #1a1714;
+ --cream-2: #221d18;
+ --paper: #241f1a;
+ --ink: #f0e8dc;
+ --ink-2: #d5c9b8;
+ --muted: #9c8f7d;
+ --line: #392f26;
+ --line-strong: #4a3d30;
+
+ --caramel: #c08a4f;
+ --caramel-dark: #d5a068;
+ --caramel-soft: #2f2721;
+ --sage: #7aa08c;
+ --sage-soft: #25281f;
+ --clay: #c2724f;
+
+ --ok: #7ab085;
+ --ok-soft: #1f2a20;
+ --warn: #d9ab5c;
+ --warn-soft: #2a2417;
+ --bad: #d9736a;
+ --bad-soft: #2d1f1c;
+}
+
+html[data-theme="dark"] body {
+ background: #161310;
+ color: var(--ink);
+}
+
+html[data-theme="dark"] .navbar {
+ background: rgba(26, 23, 20, 0.78);
+}
+
+html[data-theme="dark"] .nav-container {
+ background: rgba(36, 31, 26, 0.9);
+ border-color: var(--line);
+ box-shadow: 0 8px 30px -14px rgba(0, 0, 0, 0.6);
+}
+
+html[data-theme="dark"] .card {
+ background: var(--paper);
+ border-color: var(--line);
+}
+
+html[data-theme="dark"] .hero {
+ background: linear-gradient(135deg, #221d18 0%, #1a1714 60%, #241f1a 100%);
+ color: var(--ink);
+}
+
+html[data-theme="dark"] .hero h1,
+html[data-theme="dark"] .hero p {
+ color: var(--ink);
+}
+
+html[data-theme="dark"] .doc-preview {
+ background: #1a1714;
+}
+
+html[data-theme="dark"] .doc-preview img {
+ background: #f6efe3;
+}
+
+html[data-theme="dark"] .modal {
+ background: var(--paper);
+ border-color: var(--line);
+}
+
+html[data-theme="dark"] select,
+html[data-theme="dark"] input,
+html[data-theme="dark"] textarea {
+ background: var(--cream-2);
+ color: var(--ink);
+ border-color: var(--line-strong);
+}
+
+html[data-theme="dark"] ::selection {
+ background: var(--caramel);
+ color: #1a1714;
+}
+
+html[data-theme="dark"] a {
+ color: var(--caramel-dark);
+}
+
+/* ============================================================
+   TOMBOL TOGGLE TEMA (matahari / bulan)
+   ============================================================ */
+.theme-toggle {
+ position: relative;
+ width: 42px;
+ height: 42px;
+ border-radius: 50%;
+ border: none;
+ background: var(--caramel-soft);
+ color: var(--caramel-dark);
+ cursor: pointer;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ flex-shrink: 0;
+ transition: all 0.3s var(--ease);
+ outline: none;
+}
+
+.theme-toggle:hover {
+ background: var(--caramel);
+ color: #fff;
+ transform: rotate(-12deg) scale(1.08);
+}
+
+.theme-toggle:active {
+ transform: scale(0.92);
+}
+
+.theme-toggle svg {
+ width: 19px;
+ height: 19px;
+}
+
+.theme-toggle .icon-sun { display: none; }
+.theme-toggle .icon-moon { display: block; }
+html[data-theme="dark"] .theme-toggle .icon-sun { display: block; }
+html[data-theme="dark"] .theme-toggle .icon-moon { display: none; }
+
+html[data-theme="dark"] .theme-toggle {
+ background: #2f2721;
+ color: var(--caramel-dark);
+}
+
+/* ============================================================
+   RESPONSIVE FLOATING NAV
+   ============================================================ */
+@media (max-width: 768px) {
+ .nav-shell {
+  padding: 0 12px;
+  margin: 10px auto;
+ }
+
+ .nav-container {
+  padding: 0 12px;
+ }
+
+ .theme-toggle {
+  width: 36px;
+  height: 36px;
+ }
+
+ .theme-toggle svg {
+  width: 17px;
+  height: 17px;
  }
 }
