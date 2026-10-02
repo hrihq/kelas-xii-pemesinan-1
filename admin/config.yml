@@ -2,7 +2,7 @@ backend:
   name: github
   repo: hrihq/kelas-xii-pemesinan-1
   branch: master
-  base_url: https://NAMA-WORKER-KAMU.workers.dev # GANTI: URL Cloudflare Worker OAuth proxy
+  base_url: https://kelas-oauth.branch-vessel-57e.workers.dev
   auth_endpoint: auth
   auth_scope: repo
 
