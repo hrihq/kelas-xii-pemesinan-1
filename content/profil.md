@@ -13,16 +13,16 @@ struktur:
     nama: Fajar Shohibul Hawari
   - jabatan: Bendahara
     nama: Jayu Zakia
-  - jabatan: BENDAHARA 2
+  - jabatan: Bendahara 2
     nama: "Muhammad Kahfi Saefullah "
   - jabatan: Sekretaris
     nama: Rifqi Yafiq Rafansyah
 kontak:
   - jabatan: Wali Kelas
-    nama: Bpk. Sutrisno
-    telepon: "081234567890"
-    email: wali.kelas@smkn1.sch.id
-  - jabatan: Ketua Kelas
-    nama: Ahmad Fauzi
-    telepon: "089876543210"
+    nama: "Mrs. Isna Iskandar "
+    telepon: "08174714474"
+    email: ""
+  - jabatan: Danton
+    nama: Fino Tegar
+    telepon: "089512594760"
 ---
