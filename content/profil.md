@@ -1,28 +1,28 @@
 ---
 info:
-  Nama Sekolah: "SMK NEGERI 1 CONTOH"
-  Nama Kelas: "XII PEMESINAN 1"
-  Jurusan: "Teknik Pemesinan"
-  Wali Kelas: "Bpk. Sutrisno"
-  Tahun Ajaran: "2026/2027"
-  Jumlah Siswa: "32"
+  Nama Sekolah: SMK Global Mulia
+  Nama Kelas: XII PEMESINAN 1
+  Jurusan: Teknik Pemesinan
+  Wali Kelas: Mrs Isna Iskandar Yuniarti
+  Tahun Ajaran: 2026/2027
+  Jumlah Siswa: "35"
 struktur:
-  - jabatan: "Ketua Kelas"
-    nama: "Ahmad Fauzi"
-  - jabatan: "Wakil Ketua"
-    nama: "Siti Nurhaliza"
-  - jabatan: "Sekretaris"
-    nama: "Budi Santoso"
-  - jabatan: "Bendahara"
-    nama: "Dewi Lestari"
-  - jabatan: "PJOK"
-    nama: "Rizky Ramadhan"
+  - jabatan: Danton
+    nama: Fino Tegar. A
+  - jabatan: Poltar
+    nama: Fajar Shohibul Hawari
+  - jabatan: Bendahara
+    nama: Jayu Zakia
+  - jabatan: BENDAHARA 2
+    nama: "Muhammad Kahfi Saefullah "
+  - jabatan: Sekretaris
+    nama: Rifqi Yafiq Rafansyah
 kontak:
-  - jabatan: "Wali Kelas"
-    nama: "Bpk. Sutrisno"
+  - jabatan: Wali Kelas
+    nama: Bpk. Sutrisno
     telepon: "081234567890"
-    email: "wali.kelas@smkn1.sch.id"
-  - jabatan: "Ketua Kelas"
-    nama: "Ahmad Fauzi"
+    email: wali.kelas@smkn1.sch.id
+  - jabatan: Ketua Kelas
+    nama: Ahmad Fauzi
     telepon: "089876543210"
 ---
