@@ -1,45 +1,166 @@
 <!DOCTYPE html>
 <html lang="id">
- <head>
- <meta charset="UTF-8" />
- <meta name="viewport" content="width=device-width, initial-scale=1.0" />
- <title>Admin - Kelas XII PEMESINAN 1</title>
- <meta name="robots" content="noindex" />
- <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%231a73e8%22/><text x=%2250%22 y=%2268%22 font-size=%2252%22 font-weight=%22bold%22 fill=%22white%22 text-anchor=%22middle%22 font-family=%22Arial%22>XII</text></svg>" />
- <style>
- body { font-family: "Segoe UI", Roboto, Arial, sans-serif; background: #f8f9fa; }
- .cms-loading {
- position: fixed; inset: 0; display: flex; flex-direction: column;
- align-items: center; justify-content: center; gap: 14px; background: #f8f9fa;
- }
- .cms-loading .spinner {
- width: 38px; height: 38px; border: 3px solid #dadce0;
- border-top-color: #1a73e8; border-radius: 50%; animation: spin 1s linear infinite;
- }
- .cms-loading p { color: #5f6368; font-size: 0.95rem; }
- @keyframes spin { to { transform: rotate(360deg); } }
- </style>
- </head>
- <body>
- <div id="cms-loader" class="cms-loading">
- <div class="spinner"></div>
- <p>Memuat panel admin...</p>
- </div>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Admin - Kelas XII PEMESINAN 1</title>
+		<meta name="robots" content="noindex" />
+		<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%231a73e8%22/><text x=%2250%22 y=%2268%22 font-size=%2252%22 font-weight=%22bold%22 fill=%22white%22 text-anchor=%22middle%22 font-family=%22Arial%22>XII</text></svg>" />
+		<style>
+			:root {
+				--cream: #f6efe3;
+				--cream-2: #efe5d5;
+				--paper: #fffdf8;
+				--ink: #2c2723;
+				--ink-2: #5c534a;
+				--caramel: #a9713a;
+				--line: #e3d7c3;
+			}
+			* { box-sizing: border-box; margin: 0; padding: 0; }
+			body {
+				font-family: "Segoe UI", Roboto, Arial, sans-serif;
+				background: var(--cream);
+				color: var(--ink);
+			}
 
- <!-- Include Decap CMS dari CDN -->
- <script src="https://unpkg.com/decap-cms@^3.7.0/dist/decap-cms.js"></script>
+			/* ---------- gerbang kata sandi ---------- */
+			.gate {
+				position: fixed; inset: 0;
+				display: flex; align-items: center; justify-content: center;
+				padding: 22px;
+				background: radial-gradient(circle at 30% 20%, #f9f3e8 0%, var(--cream) 55%, #efe3cf 100%);
+			}
+			.gate-card {
+				width: 100%; max-width: 400px;
+				background: var(--paper);
+				border: 1px solid var(--line);
+				border-radius: 20px;
+				padding: 32px 28px 28px;
+				box-shadow: 0 20px 60px -24px rgba(80, 58, 32, 0.45);
+				animation: pop 0.4s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+			}
+			@keyframes pop {
+				from { opacity: 0; transform: translateY(16px) scale(0.96); }
+				to   { opacity: 1; transform: none; }
+			}
+			.gate-badge {
+				width: 52px; height: 52px; border-radius: 15px;
+				background: linear-gradient(135deg, var(--caramel), #7d4f24);
+				color: #fff; display: flex; align-items: center; justify-content: center;
+				font-weight: 800; font-size: 1.05rem; letter-spacing: 0.5px;
+				margin-bottom: 16px;
+				box-shadow: 0 10px 22px -10px rgba(125, 79, 36, 0.8);
+			}
+			.gate h1 { font-size: 1.28rem; font-weight: 800; margin-bottom: 6px; }
+			.gate p { font-size: 0.9rem; color: var(--ink-2); margin-bottom: 20px; line-height: 1.5; }
+			.gate label { display: block; font-size: 0.8rem; font-weight: 700; color: var(--ink-2); margin-bottom: 7px; }
+			.gate input {
+				width: 100%; padding: 12px 14px;
+				border: 1.5px solid var(--line); border-radius: 11px;
+				font-size: 1rem; background: #fff; color: var(--ink);
+				outline: none; transition: all 0.2s ease;
+			}
+			.gate input:focus { border-color: var(--caramel); box-shadow: 0 0 0 4px rgba(169, 113, 58, 0.15); }
+			.gate .err {
+				display: none; margin-top: 10px; font-size: 0.82rem; font-weight: 600;
+				color: #b3261e; background: #fdecea; border-radius: 9px; padding: 9px 12px;
+			}
+			.gate .err.show { display: block; animation: shake 0.35s ease; }
+			@keyframes shake {
+				0%, 100% { transform: translateX(0); }
+				25% { transform: translateX(-6px); }
+				75% { transform: translateX(6px); }
+			}
+			.gate button {
+				width: 100%; margin-top: 16px;
+				padding: 13px; border: none; border-radius: 12px;
+				background: linear-gradient(135deg, var(--caramel), #7d4f24);
+				color: #fff; font-size: 1rem; font-weight: 700; cursor: pointer;
+				transition: transform 0.2s ease, box-shadow 0.2s ease;
+				box-shadow: 0 12px 24px -12px rgba(125, 79, 36, 0.9);
+			}
+			.gate button:hover { transform: translateY(-2px); box-shadow: 0 16px 30px -12px rgba(125, 79, 36, 1); }
+			.gate button:active { transform: translateY(0); }
+			.gate .hint { margin-top: 14px; font-size: 0.76rem; color: var(--ink-2); text-align: center; opacity: 0.75; }
 
- <script>
- // Sembunyikan loader setelah CMS siap
- if (window.decapCMS) {
- window.decapCMS.init();
- }
- window.addEventListener("load", () => {
- setTimeout(() => {
- const l = document.getElementById("cms-loader");
- if (l) l.style.display = "none";
- }, 2500);
- });
- </script>
- </body>
+			/* ---------- loader CMS ---------- */
+			.cms-loading {
+				position: fixed; inset: 0; display: none; flex-direction: column;
+				align-items: center; justify-content: center; gap: 14px;
+				background: var(--cream);
+			}
+			.cms-loading.on { display: flex; }
+			.cms-loading .spinner {
+				width: 38px; height: 38px; border: 3px solid var(--line);
+				border-top-color: var(--caramel); border-radius: 50%; animation: spin 1s linear infinite;
+			}
+			.cms-loading p { color: var(--ink-2); font-size: 0.95rem; }
+			@keyframes spin { to { transform: rotate(360deg); } }
+		</style>
+	</head>
+	<body>
+		<!-- Gerbang kata sandi sebelum masuk Decap CMS -->
+		<div id="gate" class="gate">
+			<div class="gate-card">
+				<div class="gate-badge">XII</div>
+				<h1>Panel Admin Kelas</h1>
+				<p>Masukkan kata sandi admin untuk membuka pengelolaan konten web.</p>
+				<form id="gateForm" autocomplete="off">
+					<label for="adminPass">Kata Sandi</label>
+					<input id="adminPass" type="password" placeholder="Ketik kata sandi..." autocomplete="off" />
+					<div id="gateErr" class="err">Kata sandi salah. Coba lagi.</div>
+					<button type="submit">Masuk</button>
+				</form>
+				<p class="hint">Hanya untuk admin Kelas XII PEMESINAN 1</p>
+			</div>
+		</div>
+
+		<!-- Loader CMS (muncul setelah kata sandi benar) -->
+		<div id="cms-loader" class="cms-loading">
+			<div class="spinner"></div>
+			<p>Memuat panel admin...</p>
+		</div>
+
+		<!-- Include Decap CMS dari CDN -->
+		<script src="https://unpkg.com/decap-cms@^3.7.0/dist/decap-cms.js"></script>
+
+		<script>
+			// Cek apakah sudah lewat gerbang (sementara, per sesi)
+			if (sessionStorage.getItem("pm1_admin_ok") === "1") {
+				document.getElementById("gate").style.display = "none";
+				document.getElementById("cms-loader").classList.add("on");
+			}
+
+			document.getElementById("gateForm").addEventListener("submit", function (e) {
+				e.preventDefault();
+				const pass = document.getElementById("adminPass").value;
+				const err = document.getElementById("gateErr");
+
+				// Kata sandi admin Kelas XII PEMESINAN 1
+				if (pass === "xiipm1") {
+					sessionStorage.setItem("pm1_admin_ok", "1");
+					err.classList.remove("show");
+					document.getElementById("gate").style.display = "none";
+					document.getElementById("cms-loader").classList.add("on");
+				} else {
+					err.classList.remove("show");
+					void err.offsetWidth; // restart animasi shake
+					err.classList.add("show");
+					document.getElementById("adminPass").value = "";
+					document.getElementById("adminPass").focus();
+				}
+			});
+
+			// Sembunyikan loader setelah CMS siap
+			if (window.decapCMS) {
+				window.decapCMS.init();
+			}
+			window.addEventListener("load", () => {
+				setTimeout(() => {
+					const l = document.getElementById("cms-loader");
+					if (l) l.style.display = "none";
+				}, 2500);
+			});
+		</script>
+	</body>
 </html>
