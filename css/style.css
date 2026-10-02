@@ -1023,6 +1023,44 @@ main.container {
  border-radius: 10px;
  }
 
+ /* Navbar mobile: sembunyikan sub-teks & kecilkan brand
+    biar tidak wrapping dan kapsul tetap ramping */
+ .nav-brand .sub {
+  display: none;
+ }
+
+ .nav-brand {
+  font-size: 0.94rem;
+  gap: 9px;
+ }
+
+ .nav-logo {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  font-size: 0.72rem;
+ }
+
+ .nav-toggle {
+  padding: 7px 13px;
+  font-size: 0.82rem;
+ }
+
+ .theme-toggle {
+  width: 34px;
+  height: 34px;
+ }
+
+ .theme-toggle svg {
+  width: 16px;
+  height: 16px;
+ }
+
+ .nav-container {
+  padding: 0 10px;
+  gap: 6px;
+ }
+
  .hero {
  padding: 50px 18px 56px;
  }
