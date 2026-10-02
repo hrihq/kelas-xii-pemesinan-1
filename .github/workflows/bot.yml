@@ -1,0 +1,85 @@
+name: Bot admin kelas + deploy
+
+on:
+  schedule:
+    # tiap 5 menit
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: bot-kelas
+  cancel-in-progress: false
+
+jobs:
+  bot:
+    runs-on: ubuntu-latest
+    outputs:
+      changed: ${{ steps.commit.outputs.changed }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.BOT_PAT }}
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Jalankan bot Telegram
+        env:
+          TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
+          BOT_PAT: ${{ secrets.BOT_PAT }}
+          REPO: hrihq/kelas-xii-pemesinan-1
+          ADMIN_IDS: ${{ secrets.ADMIN_IDS }}
+        run: python scripts/bot.py
+
+      - name: Cek perubahan
+        id: commit
+        run: |
+          git config user.email "bot@users.noreply.github.com"
+          git config user.name "Bot Kelas XII"
+          if [[ -n "$(git status --porcelain)" ]]; then
+            git add -A
+            git commit -qm "Bot: konten baru dari Telegram"
+            git push
+            echo "changed=true" >> $GITHUB_OUTPUT
+            echo "ada perubahan, di-push"
+          else
+            echo "changed=false" >> $GITHUB_OUTPUT
+            echo "tidak ada perubahan"
+          fi
+
+  build-deploy:
+    needs: bot
+    if: needs.bot.outputs.changed == 'true'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Build data JSON
+        run: |
+          pip install pyyaml
+          python scripts/build.py
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./
+
+      - name: Deploy ke GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
