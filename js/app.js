@@ -39,6 +39,15 @@ function esc(s) {
 // Icon dokumen (SVG, tanpa emoji)
 const DOC_ICON = `<svg class="doc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>`;
 
+// Icon download
+const DOWNLOAD_ICON = `<svg class="doc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>`;
+
+// Cek apakah lampiran adalah gambar (untuk preview)
+function isImage(path) {
+ if (!path) return false;
+ return /\.(jpg|jpeg|png|webp|gif|bmp|svg)$/i.test(path);
+}
+
 // Deadline pill untuk tugas
 function deadlinePill(deadline) {
  if (!deadline) return "";
@@ -320,13 +329,20 @@ function openDetail(item, type) {
  </p>
 
  ${
- item.document
- ? `<h4>Lampiran Dokumen</h4>
- <a class="doc-link" href="${esc(item.document)}" target="_blank" rel="noopener" style="font-size:0.92rem;padding:9px 16px">
- ${DOC_ICON}
- ${esc(baseName(item.document))} &middot; Buka dokumen
+ isImage(item.document)
+ ? `<h4>Preview Gambar</h4>
+ <div class="doc-preview">
+ <img src="${esc(item.document)}" alt="Lampiran ${esc(baseName(item.document))}" loading="lazy" onclick="window.open('${esc(item.document)}','_blank')" />
+ </div>
+ <a class="doc-link" href="${esc(item.document)}" download style="font-size:0.92rem;padding:9px 16px">
+ ${DOWNLOAD_ICON} ${esc(baseName(item.document))} &middot; Download
  </a>`
- : ""
+ : item.document
+ ? `<h4>Lampiran Dokumen</h4>
+ <a class="doc-link" href="${esc(item.document)}" target="_blank" rel="noopener" download style="font-size:0.92rem;padding:9px 16px">
+ ${DOWNLOAD_ICON} ${esc(baseName(item.document))} &middot; Download / Buka
+ </a>`
+ : ""}
  }
  </div>
  </div>`;
