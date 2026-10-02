@@ -1,13 +1,13 @@
 ---
 info:
-  Nama Sekolah: SMK Global Mulia
-  Nama Kelas: XII PEMESINAN 1
-  Jurusan: Teknik Pemesinan
-  Wali Kelas: Mrs Isna Iskandar Yuniarti
-  Tahun Ajaran: 2026/2027
+  Nama Sekolah: "SMK Global Mulia"
+  Nama Kelas: "XII PEMESINAN 1"
+  Jurusan: "Teknik Pemesinan"
+  Wali Kelas: "Mrs Isna Iskandar Yuniarti"
+  Tahun Ajaran: "2026/2027"
   Jumlah Siswa: "35"
 struktur:
-  - jabatan: Danton
+- jabatan: Danton
     nama: Fino Tegar. A
   - jabatan: Poltar
     nama: Fajar Shohibul Hawari
@@ -18,7 +18,7 @@ struktur:
   - jabatan: Sekretaris
     nama: Rifqi Yafiq Rafansyah
 kontak:
-  - jabatan: Wali Kelas
+- jabatan: Wali Kelas
     nama: "Mrs. Isna Iskandar "
     telepon: "08174714474"
     email: ""
