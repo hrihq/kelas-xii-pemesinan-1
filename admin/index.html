@@ -171,6 +171,7 @@
 					<div class="tabs">
 						<div class="tab on" data-tab="tugas">Tambah Tugas</div>
 						<div class="tab" data-tab="pengumuman">Pengumuman</div>
+						<div class="tab" data-tab="profil">Profil</div>
 					</div>
 
 					<!-- TAB TUGAS -->
@@ -209,6 +210,43 @@
 						<div id="pErr" class="err"></div>
 						<div id="pOk" class="ok"></div>
 						<button type="submit" id="pBtn">Publikasikan</button>
+					</form>
+
+					<!-- TAB PROFIL -->
+					<form id="profilForm" class="tabpane hidden" autocomplete="off">
+						<label for="prSekolah">Nama Sekolah</label>
+						<input id="prSekolah" type="text" placeholder="SMK ..." />
+
+						<label for="prKelas">Nama Kelas</label>
+						<input id="prKelas" type="text" placeholder="XII PEMESINAN 1" />
+
+						<label for="prJurusan">Jurusan</label>
+						<input id="prJurusan" type="text" placeholder="Teknik Pemesinan" />
+
+						<label for="prWali">Wali Kelas</label>
+						<input id="prWali" type="text" placeholder="Nama wali kelas" />
+
+						<label for="prTahun">Tahun Ajaran</label>
+						<input id="prTahun" type="text" placeholder="2026/2027" />
+
+						<label for="prSiswa">Jumlah Siswa</label>
+						<input id="prSiswa" type="number" min="1" placeholder="35" />
+
+						<label for="prStruktur">Struktur Organisasi</label>
+						<textarea id="prStruktur" style="min-height:150px;font-family:ui-monospace,monospace;font-size:0.84rem" placeholder="- jabatan: Danton
+  nama: Nama Siswa
+- jabatan: Bendahara
+  nama: Nama Siswa"></textarea>
+						<p class="hint">Satu jabatan per baris, format: <code>- jabatan: Nama Jabatan</code> lalu baris baru <code>nama: Nama Orang</code></p>
+
+						<label for="prKontak">Kontak (opsional)</label>
+						<textarea id="prKontak" style="min-height:110px;font-family:ui-monospace,monospace;font-size:0.84rem" placeholder="- jabatan: Wali Kelas
+  nama: Nama
+  telepon: 08xxx"></textarea>
+
+						<div id="prErr" class="err"></div>
+						<div id="prOk" class="ok"></div>
+						<button type="submit" id="prBtn">Simpan Profil</button>
 					</form>
 				</div>
 
@@ -289,9 +327,35 @@
 				return ghPut(path, bytes, message);
 			}
 
+			async function ghPutRaw(path, text, message) {
+				const bytes = new TextEncoder().encode(text);
+				return ghPut(path, bytes, message);
+			}
+
+			async function ghGet(path) {
+				const r = await fetch(`${GH_API}/repos/${REPO}/contents/${path}?ref=master`, {
+					headers: { authorization: `token ${GH_TOKEN}`, accept: "application/vnd.github+json" },
+				});
+				const j = await r.json();
+				if (!r.ok) throw new Error(j.message || "HTTP " + r.status);
+				return atob(j.content.replace(/\s/g, ""));
+			}
+
 			// ============================================================
 			// LOGIN
 			// ============================================================
+			// Cek token tersimpan sebelumnya (login sekali, jangan input token terus)
+			const SAVED_KEY = "pm1_gh_token";
+			try {
+				const saved = localStorage.getItem(SAVED_KEY);
+				if (saved) {
+					GH_TOKEN = saved;
+					document.getElementById("ghToken").value = saved;
+					document.getElementById("ghToken").parentElement.querySelector(".hint").textContent =
+						"Token tersimpan di browser ini. Logout untuk menghapus.";
+				}
+			} catch (e) {}
+
 			document.getElementById("loginForm").addEventListener("submit", async (e) => {
 				e.preventDefault();
 				const btn = document.getElementById("loginBtn");
@@ -324,6 +388,7 @@
 						return;
 					}
 					GH_TOKEN = token;
+					try { localStorage.setItem(SAVED_KEY, token); } catch (e) {}
 					btn.disabled = false;
 					btn.innerHTML = "Masuk";
 					document.getElementById("loginCard").classList.add("hidden");
@@ -340,6 +405,7 @@
 			// ============================================================
 			document.getElementById("logoutBtn").addEventListener("click", () => {
 				GH_TOKEN = null;
+				try { localStorage.removeItem(SAVED_KEY); } catch (e) {}
 				document.getElementById("ghToken").value = "";
 				document.getElementById("panel").classList.add("hidden");
 				document.getElementById("loginCard").classList.remove("hidden");
@@ -355,6 +421,11 @@
 					document.querySelectorAll(".tabpane").forEach((p) => p.classList.add("hidden"));
 					const target = document.getElementById(tab.dataset.tab + "Form");
 					if (target) target.classList.remove("hidden");
+					// load profil saat pertama kali tab dibuka
+					if (tab.dataset.tab === "profil" && !tab.dataset.loaded) {
+						tab.dataset.loaded = "1";
+						loadProfil();
+					}
 				});
 			});
 
@@ -482,6 +553,107 @@
 				}
 			});
 
+			// ============================================================
+			// PROFIL: load data lama + simpan
+			// ============================================================
+			function parseProfil(md) {
+				// ambil blok frontmatter
+				const m = md.match(/^---\r?\n([\s\S]*?)\r?\n---/);
+				if (!m) return null;
+				const fm = m[1];
+				const get = (key) => {
+					const r = new RegExp(key + ":\\s*(.+)", "i").exec(fm);
+					return r ? r[1].trim().replace(/^"|"$/g, "") : "";
+				};
+				// struktur: ambil semua list di bawah "struktur:"
+				const sec = (name) => {
+					const r = new RegExp(name + ":\\s*\\n([\\s\\S]*?)(?=\\n\\w+:|$)").exec(fm);
+					return r ? r[1].trim() : "";
+				};
+				return {
+					info: {
+						"Nama Sekolah": get("Nama Sekolah"),
+						"Nama Kelas": get("Nama Kelas"),
+						"Jurusan": get("Jurusan"),
+						"Wali Kelas": get("Wali Kelas"),
+						"Tahun Ajaran": get("Tahun Ajaran"),
+						"Jumlah Siswa": get("Jumlah Siswa"),
+					},
+					struktur: sec("struktur"),
+					kontak: sec("kontak"),
+				};
+			}
+
+			async function loadProfil() {
+				if (!GH_TOKEN) return;
+				try {
+					const md = await ghGet("content/profil.md");
+					const p = parseProfil(md);
+					if (!p) return;
+					document.getElementById("prSekolah").value = p.info["Nama Sekolah"] || "";
+					document.getElementById("prKelas").value = p.info["Nama Kelas"] || "";
+					document.getElementById("prJurusan").value = p.info["Jurusan"] || "";
+					document.getElementById("prWali").value = p.info["Wali Kelas"] || "";
+					document.getElementById("prTahun").value = p.info["Tahun Ajaran"] || "";
+					document.getElementById("prSiswa").value = (p.info["Jumlah Siswa"] || "").replace(/"/g, "");
+					document.getElementById("prStruktur").value = p.struktur || "";
+					document.getElementById("prKontak").value = p.kontak || "";
+				} catch (e) {
+					// profil belum ada, biarkan kosong
+				}
+			}
+
+			document.getElementById("profilForm").addEventListener("submit", async (e) => {
+				e.preventDefault();
+				const btn = document.getElementById("prBtn");
+				const errEl = document.getElementById("prErr");
+				const okEl = document.getElementById("prOk");
+
+				const sekolah = document.getElementById("prSekolah").value.trim();
+				const kelas = document.getElementById("prKelas").value.trim();
+				const jurusan = document.getElementById("prJurusan").value.trim();
+				const wali = document.getElementById("prWali").value.trim();
+				const tahun = document.getElementById("prTahun").value.trim();
+				const siswa = document.getElementById("prSiswa").value.trim();
+				const struktur = document.getElementById("prStruktur").value.trim();
+				const kontak = document.getElementById("prKontak").value.trim();
+
+				errEl.classList.remove("show");
+				okEl.classList.remove("show");
+
+				if (!sekolah || !kelas) {
+					showErr(errEl, "Nama sekolah dan nama kelas wajib diisi.");
+					return;
+				}
+
+				btn.disabled = true;
+				btn.innerHTML = '<span class="spinner"></span>Menyimpan...';
+
+				try {
+					let fm = "info:\n";
+					fm += '  Nama Sekolah: "' + sekolah + '"\n';
+					fm += '  Nama Kelas: "' + kelas + '"\n';
+					fm += '  Jurusan: "' + jurusan + '"\n';
+					fm += '  Wali Kelas: "' + wali + '"\n';
+					fm += '  Tahun Ajaran: "' + tahun + '"\n';
+					fm += '  Jumlah Siswa: "' + siswa + '"\n';
+					if (struktur) fm += "struktur:\n" + struktur + "\n";
+					if (kontak) fm += "kontak:\n" + kontak + "\n";
+
+					await ghPutRaw("content/profil.md", "---\n" + fm + "---\n", "Panel admin: update profil kelas");
+
+					btn.disabled = false;
+					btn.innerHTML = "Simpan Profil";
+					okEl.textContent = "Berhasil. Profil kelas sudah diperbarui.";
+					okEl.classList.add("show");
+				} catch (ex) {
+					btn.disabled = false;
+					btn.innerHTML = "Simpan Profil";
+					showErr(errEl, "Gagal: " + esc(ex.message));
+				}
+			});
+
+			// ============================================================
 			// default deadline = H+7
 			(function () {
 				const d = new Date();
