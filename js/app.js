@@ -42,6 +42,12 @@ const DOC_ICON = `<svg class="doc-icon" viewBox="0 0 24 24" fill="none" stroke="
 // Icon download
 const DOWNLOAD_ICON = `<svg class="doc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>`;
 
+// Path dokumen absolut (site di-host di sub-path GitHub Pages)
+function docUrl(path) {
+ if (!path) return "";
+ return new URL(path, window.location.origin + window.location.pathname.replace(/[^/]*$/, "")).href;
+}
+
 // Cek apakah lampiran adalah gambar (untuk preview)
 function isImage(path) {
  if (!path) return false;
@@ -141,7 +147,7 @@ function renderPengumumanList(el, items, limit = 0) {
  <span>${d ? formatLongDate(d.iso) : "-"}</span>
  ${
  item.document
- ? `<a class="doc-link" href="${esc(item.document)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">
+ ? `<a class="doc-link" href="${esc(docUrl(item.document))}" target="_blank" rel="noopener" onclick="event.stopPropagation()">
  ${DOC_ICON}
  ${esc(baseName(item.document))}
  </a>`
@@ -197,7 +203,7 @@ function renderTugasList(el, items, limit = 0, filterMapel = "") {
  <span>${esc(item.teacher || "-")}</span>
  ${
  item.document
- ? `<a class="doc-link" href="${esc(item.document)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">
+ ? `<a class="doc-link" href="${esc(docUrl(item.document))}" target="_blank" rel="noopener" onclick="event.stopPropagation()">
  ${DOC_ICON}
  ${esc(baseName(item.document))}
  </a>`
@@ -332,17 +338,17 @@ function openDetail(item, type) {
  isImage(item.document)
  ? `<h4>Preview Gambar</h4>
  <div class="doc-preview">
- <img src="${esc(item.document)}" alt="Lampiran ${esc(baseName(item.document))}" loading="lazy" onclick="window.open('${esc(item.document)}','_blank')" />
+ <img src="${esc(docUrl(item.document))}" alt="Lampiran ${esc(baseName(item.document))}" loading="lazy" onclick="window.open('${esc(docUrl(item.document))}','_blank')" />
  </div>
- <a class="doc-link" href="${esc(item.document)}" download style="font-size:0.92rem;padding:9px 16px">
+ <a class="doc-link" href="${esc(docUrl(item.document))}" download style="font-size:0.92rem;padding:9px 16px">
  ${DOWNLOAD_ICON} ${esc(baseName(item.document))} &middot; Download
  </a>`
  : item.document
  ? `<h4>Lampiran Dokumen</h4>
- <a class="doc-link" href="${esc(item.document)}" target="_blank" rel="noopener" download style="font-size:0.92rem;padding:9px 16px">
+ <a class="doc-link" href="${esc(docUrl(item.document))}" target="_blank" rel="noopener" download style="font-size:0.92rem;padding:9px 16px">
  ${DOWNLOAD_ICON} ${esc(baseName(item.document))} &middot; Download / Buka
  </a>`
- : ""}
+ : ""
  }
  </div>
  </div>`;
