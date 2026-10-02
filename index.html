@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="id">
+ <head>
+ <meta charset="UTF-8" />
+ <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+ <title>Kelas XII PEMESINAN 1 - Informasi Tugas dan Pengumuman</title>
+ <meta
+ name="description"
+ content="Website resmi Kelas XII PEMESINAN 1. Cek tugas, pengumuman, dan dokumen kelas secara online."
+ />
+ <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23a0682f%22/><text x=%2250%22 y=%2268%22 font-size=%2252%22 font-weight=%22bold%22 fill=%22white%22 text-anchor=%22middle%22 font-family=%22Arial%22>XII</text></svg>" />
+ <link rel="stylesheet" href="css/style.css" />
+ </head>
+ <body>
+ <nav class="navbar">
+ <div class="nav-progress" id="navProgress"></div>
+ <div class="nav-container">
+ <a href="index.html" class="nav-brand">
+ <span class="nav-logo">XII</span>
+ <span>PEMESINAN 1<span class="sub">Sekolah Menengah Kejuruan</span></span>
+ </a>
+ <button class="nav-toggle" aria-label="Menu">Menu</button>
+ <ul class="nav-links">
+ <li><a href="index.html" data-page="beranda">Beranda</a></li>
+ <li><a href="tugas.html" data-page="tugas">Tugas</a></li>
+ <li><a href="pengumuman.html" data-page="pengumuman">Pengumuman</a></li>
+ <li><a href="profil.html" data-page="profil">Profil</a></li>
+ </ul>
+ </div>
+ </nav>
+
+ <section class="hero">
+ <div class="hero-inner">
+ <span class="hero-badge"><span class="dot"></span>Tahun Ajaran 2026/2027</span>
+ <h1>Kelas XII PEMESINAN 1</h1>
+ <p>
+ Pusat informasi tugas, pengumuman, dan dokumen kelas. Semua materi
+ tersimpan rapi di satu tempat, akses kapan saja dan di mana saja.
+ </p>
+ <div class="hero-cta">
+ <a href="tugas.html" class="btn btn-white">Lihat Daftar Tugas</a>
+ <a href="pengumuman.html" class="btn btn-ghost">Pengumuman Terbaru</a>
+ </div>
+ </div>
+ </section>
+
+ <main class="container">
+ <h2 class="section-title">Akses Cepat</h2>
+ <div class="grid grid-3">
+ <a href="tugas.html" class="card hoverable reveal">
+ <div class="card-icon">
+ <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg>
+ </div>
+ <h3>Tugas</h3>
+ <p>Daftar tugas semua mata pelajaran beserta tenggat dan dokumen pendukung.</p>
+ </a>
+ <a href="pengumuman.html" class="card hoverable reveal">
+ <div class="card-icon">
+ <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg>
+ </div>
+ <h3>Pengumuman</h3>
+ <p>Kabar terbaru seputar kelas, jadwal pelajaran, dan kegiatan sekolah.</p>
+ </a>
+ <a href="profil.html" class="card hoverable reveal">
+ <div class="card-icon">
+ <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+ </div>
+ <h3>Profil Kelas</h3>
+ <p>Informasi kelas, wali kelas, jurusan, dan struktur organisasi kelas.</p>
+ </a>
+ </div>
+
+ <h2 class="section-title">Tugas Terdekat</h2>
+ <div id="tugasTerdekat"></div>
+
+ <h2 class="section-title">Pengumuman Terbaru</h2>
+ <div id="pengumumanTerbaru"></div>
+ </main>
+
+ <footer class="footer">
+ <div class="footer-inner">
+ <div>
+ &copy; 2026 Kelas XII PEMESINAN 1 &middot; Dibuat dengan
+ <a href="https://pages.github.com" target="_blank" rel="noopener">GitHub Pages</a>
+ </div>
+ <a href="admin/" class="admin-link">
+ <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+ Masuk Admin
+ </a>
+ </div>
+ </footer>
+
+ <div id="modalOverlay" class="modal-overlay"></div>
+
+ <script src="js/app.js"></script>
+ <script>
+ document.addEventListener("DOMContentLoaded", async () => {
+ const elT = document.getElementById("tugasTerdekat");
+ const elP = document.getElementById("pengumumanTerbaru");
+ showSkeleton(elT, 3);
+ showSkeleton(elP, 2);
+
+ try {
+ const [tugas, pengumuman] = await Promise.all([
+ fetchJSON("data/tugas.json"),
+ fetchJSON("data/pengumuman.json"),
+ ]);
+ window.__DATA__ = { tugas, pengumuman };
+ renderTugasList(elT, tugas, 4);
+ renderPengumumanList(elP, pengumuman, 3);
+ revealAll();
+ } catch (err) {
+ console.error(err);
+ showError(elT, err.message);
+ showError(elP, err.message);
+ }
+ });
+ </script>
+ </body>
+</html>

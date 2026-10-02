@@ -1,0 +1,15 @@
+# Data hasil build (di-generate otomatis oleh scripts/build.py
+# dan oleh GitHub Actions — jangan edit manual)
+/data/
+
+# Dependency lokal (opsional, kalau mau test worker)
+/node_modules/
+
+# File sistem
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+docs-assets/
