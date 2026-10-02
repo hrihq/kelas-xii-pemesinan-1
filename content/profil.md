@@ -13,7 +13,7 @@ struktur:
     nama: Fajar Shohibul Hawari
   - jabatan: Bendahara
     nama: Jayu Zakia
-  - jabatan: BENDAHARA 2
+  - jabatan: Bendahara 2
     nama: "Muhammad Kahfi Saefullah "
   - jabatan: Sekretaris
     nama: Rifqi Yafiq Rafansyah
