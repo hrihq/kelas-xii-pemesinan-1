@@ -7,19 +7,19 @@ info:
   Tahun Ajaran: "2026/2027"
   Jumlah Siswa: "35"
 struktur:
-- jabatan: Danton
+  - jabatan: Danton
     nama: Fino Tegar. A
   - jabatan: Poltar
     nama: Fajar Shohibul Hawari
   - jabatan: Bendahara
     nama: Jayu Zakia
   - jabatan: Bendahara 2
-    nama: "Muhammad Kahfi Saefullah "
+    nama: "Muhammad Kahfi Saefullah"
   - jabatan: Sekretaris
     nama: Rifqi Yafiq Rafansyah
 kontak:
-- jabatan: Wali Kelas
-    nama: "Mrs. Isna Iskandar "
+  - jabatan: Wali Kelas
+    nama: "Mrs. Isna Iskandar"
     telepon: "08174714474"
     email: ""
   - jabatan: Danton

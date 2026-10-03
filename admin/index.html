@@ -583,7 +583,13 @@
 				// struktur: ambil semua list di bawah "struktur:"
 				const sec = (name) => {
 					const r = new RegExp(name + ":\\s*\\n([\\s\\S]*?)(?=\\n\\w+:|$)").exec(fm);
-					return r ? r[1].trim() : "";
+					if (!r) return "";
+					// normalisasi indentasi: 4 spasi -> 2 spasi
+					return r[1]
+						.split("\n")
+						.map((l) => l.replace(/^\\s+/, (s) => " ".repeat(Math.round(s.length / 2))))
+						.join("\n")
+						.trim();
 				};
 				return {
 					info: {
